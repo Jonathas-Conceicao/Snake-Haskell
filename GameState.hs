@@ -8,8 +8,13 @@ module GameState
 
 import Prelude hiding (Either(..))
 
-data Snake = Head | Up | Down | Left | Right
-data Slot  = Space | Wall | Food | S Snake
+data Snake = Head | Head2 | Tongue | Tail
+             | Body230 | Body030
+             | Body010 | Body120
+             | Body130 | Body131
+             | Body020 | Body021
+
+data Slot  = Space | Wall | Food | PartOf Snake
 type Line  = [Slot]
 type Board = [Line]
 
@@ -22,11 +27,15 @@ instance Num Slot where
   fromInteger 0 = Space
   fromInteger 1 = Wall
   fromInteger 2 = Food
-  fromInteger 3 = S Up
-  fromInteger 4 = S Down
-  fromInteger 5 = S Left
-  fromInteger 6 = S Right
-  fromInteger 7 = S Head
+  fromInteger n = PartOf $ fromInteger n-3
+
+instance Num Snake where
+  negate      = undefined
+  (+)         = undefined
+  (*)         = undefined
+  abs         = undefined
+  signum      = undefined
+  fromInteger n = Head
 
 baseBoard :: Int -> Board
 baseBoard = addWalls . initBoard
