@@ -8,11 +8,12 @@ module GameState
 
 import Prelude hiding (Either(..))
 
-data Snake = Head | Head2 | Tongue | Tail
-             | Body230 | Body030
-             | Body010 | Body120
-             | Body130 | Body131
-             | Body020 | Body021
+data Snake
+  = Head | Head2 | Tongue | Tail
+  | Body230 | Body030
+  | Body010 | Body120
+  | Body130 | Body131
+  | Body020 | Body021
 
 data Slot  = Space | Wall | Food | PartOf Snake
 type Line  = [Slot]
