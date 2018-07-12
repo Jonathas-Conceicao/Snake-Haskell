@@ -8,7 +8,7 @@ import Snake.GameState
 import qualified Graphics.Gloss.Game as Gloss
 
 screenWidth, screenHeight :: Int
-(screenWidth, screenHeight) = (900, 700)
+(screenWidth, screenHeight) = (896, 672)
 
 window :: Gloss.Display
 window = (Gloss.InWindow "Snake-Haskell" (screenWidth, screenHeight) (0, 0))
@@ -17,7 +17,7 @@ background :: Gloss.Color
 background = Gloss.white
 
 main :: IO ()
-main = Gloss.play window background 30 initialGameState renderGame handler [gameLoop]
+main = Gloss.play window background 60 initialGameState renderGame handler [gameLoop]
 
 handler e s = s
 gameLoop n s = s

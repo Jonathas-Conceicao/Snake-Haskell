@@ -5,12 +5,14 @@ module Snake.State.Match
   , Line(..)
   , Slot(..)
   , Snake(..)
+  , NinePatch(..)
+  , NPLine(..)
   , baseBoard
   ) where
 
-data MatchState = MatchState Board
-
-initialMatchState = MatchState $ baseBoard 5
+data MatchState = MatchState
+  { matchBoard :: Board
+  }
 
 data Snake
   = Head | Head2 | Tongue | Tail
@@ -19,38 +21,57 @@ data Snake
   | Body130 | Body131
   | Body020 | Body021
 
-data Slot  = Space | Wall | Food | PartOf Snake
+data Slot  = Menu NinePatch | Food | PartOf Snake
+
+data NinePatch
+  = Top NPLine 
+  | Mid NPLine
+  | Bot NPLine
+data NPLine = Fst | Snd | Trd
+
 type Line  = [Slot]
 type Board = [Line]
 
 instance Num Slot where
-  negate      = undefined
-  (+)         = undefined
-  (*)         = undefined
-  abs         = undefined
-  signum      = undefined
-  fromInteger 0 = Space
-  fromInteger 1 = Wall
-  fromInteger 2 = Food
+  negate = undefined
+  (+)    = undefined
+  (*)    = undefined
+  abs    = undefined
+  signum = undefined
+  fromInteger 0 = Menu $ Top Fst
+  fromInteger 1 = Menu $ Top Snd
+  fromInteger 2 = Menu $ Top Trd
+  fromInteger 3 = Menu $ Mid Fst
+  fromInteger 4 = Menu $ Mid Snd
+  fromInteger 5 = Menu $ Mid Trd
+  fromInteger 6 = Menu $ Bot Fst
+  fromInteger 7 = Menu $ Bot Snd
+  fromInteger 8 = Menu $ Bot Trd
+  fromInteger 9 = Food
   fromInteger n = PartOf $ fromInteger n-3
 
 instance Num Snake where
-  negate      = undefined
-  (+)         = undefined
-  (*)         = undefined
-  abs         = undefined
-  signum      = undefined
+  negate = undefined
+  (+)    = undefined
+  (*)    = undefined
+  abs    = undefined
+  signum = undefined
   fromInteger n = Head
 
 baseBoard :: Int -> Board
 baseBoard = addWalls . initBoard
 
 initBoard :: Int -> Board
-initBoard size = replicate size $ replicate size Space
+initBoard size = replicate size $ replicate size $ Menu $ Mid Snd
 
 addWalls :: Board -> Board
-addWalls l@(x:xs) = [t] ++ (fmap addCorner l) ++ [t]
+addWalls l@(x:_) = [bot] ++ midList ++ [top]
   where
-    t = replicate ((length x) + 2) Wall
-    addCorner k = [Wall] ++ k ++ [Wall]
+    midList = fmap addCorner l
+    addCorner k = [Menu $ Mid Fst] ++ k ++ [Menu $ Mid Trd]
+    top = [Menu $ Top Fst] ++ (replicate (length x) $ Menu $ Top Snd) ++ [Menu $ Top Trd]
+    bot = [Menu $ Bot Fst] ++ (replicate (length x) $ Menu $ Bot Snd) ++ [Menu $ Bot Trd]
 
+initialMatchState = MatchState
+  { matchBoard = baseBoard 20
+  }

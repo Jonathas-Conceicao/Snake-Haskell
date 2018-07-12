@@ -1,5 +1,6 @@
 module Snake.GameState
   ( GameState(..)
+  , Scene(..)
   , initialGameState
   ) where
 
@@ -8,14 +9,18 @@ import Snake.State.Menu
 import Snake.State.Data
 
 data GameState = GameState
-  { matchState :: MatchState
+  { currentScene :: Scene
+  , matchState :: MatchState
   , menuState  :: MenuState
   , dataState  :: DataState
   }
 
+data Scene = MatchScene | MenuScene
+
 initialGameState :: GameState
 initialGameState = GameState
-  { matchState = initialMatchState
+  { currentScene = MatchScene
+  , matchState = initialMatchState
   , menuState  = initialMenuState
   , dataState  = initialDataState
   }
