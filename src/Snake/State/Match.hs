@@ -1,12 +1,16 @@
-module GameState
-  ( Board(..)
+module Snake.State.Match
+  ( MatchState(..)
+  , initialMatchState
+  , Board(..)
   , Line(..)
   , Slot(..)
   , Snake(..)
   , baseBoard
   ) where
 
-import Prelude hiding (Either(..))
+data MatchState = MatchState Board
+
+initialMatchState = MatchState $ baseBoard 5
 
 data Snake
   = Head | Head2 | Tongue | Tail
