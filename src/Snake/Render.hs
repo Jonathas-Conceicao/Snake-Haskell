@@ -22,17 +22,15 @@ renderMatch :: GameState -> Gloss.Picture
 renderMatch state = Gloss.pictures [ pBoard, pSnake, debug ]
   where
     ms = matchState state
-    pBoard = renderBoard $ matchBoard ms
-    pSnake = Gloss.pictures $ renderSnake $ snake ms
+    pBoard = renderBoard
+    pSnake = renderSnake $ snake ms
     debug = Gloss.text $ show $ interations ms
 
-renderBoard :: Board -> Gloss.Picture
-renderBoard board = draw board
+renderBoard :: Gloss.Picture
+renderBoard = boardAsset
 
-renderSnake :: [(Position, Snake)] -> [Gloss.Picture]
-renderSnake = map renderSnake'
-  where
-    renderSnake' (p, s) = drawAt p s
+renderSnake :: Snake -> Gloss.Picture
+renderSnake = draw
 
-reposition :: Gloss.Picture -> Gloss.Picture
-reposition = Gloss.translate (-896 / 2) (-672 / 2)
+reposition :: Gloss.Picture -> Gloss.Picture -- TODO: Remove this or use relative values
+reposition = Gloss.translate 0 0 -- (-640 / 2) (-672 / 2)

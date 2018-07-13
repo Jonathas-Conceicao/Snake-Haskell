@@ -1,89 +1,60 @@
 module Snake.State.Match
   ( MatchState(..)
   , initialMatchState
-  , Board(..)
-  , Line(..)
-  , Slot(..)
   , Snake(..)
-  , NinePatch(..)
-  , NPLine(..)
+  , SnakePart(..)
+  , SnakeSlot(..)
   , Position(..)
-  , baseBoard
   , moveSnake
   ) where
 
+import Prelude hiding (Either(..))
+
 data MatchState = MatchState
-  { matchBoard :: Board
+  { boardSize   :: Int
   , interations :: Int
-  , snake :: [(Position, Snake)]
+  , snake       :: Snake
   }
 
-data Snake
-  = Head | Head2 | Tongue | Tail
-  | Body230 | Body030
-  | Body010 | Body120
-  | Body130 | Body131
-  | Body020 | Body021
+type Snake = [SnakePart]
+type SnakePart = (Position, Direction, SnakeSlot)
 
-data Slot  = Menu NinePatch | Food | PartOf Snake
+data Direction = Up | Down | Left | Right
 
-data NinePatch
-  = Top NPLine 
-  | Mid NPLine
-  | Bot NPLine
-data NPLine = Fst | Snd | Trd
-
-type Line  = [Slot]
-type Board = [Line]
+data SnakeSlot
+  =  Head0  |  Head1  |  Head2  |  Head3
+  | THead0  | THead1  | THead2  | THead3
+  | Tongue0 | Tongue1 | Tongue2 | Tongue3
+  |  Tail0  |  Tail1  |  Tail2  |  Tail3
+  |  Body0  |  Body1  |  Body2  |  Body3
+  | Curve0  | Curve1  | Curve2  | Curve3
+  
 type Position = (Int, Int)
 
-instance Num Slot where
+instance Num SnakeSlot where -- TODO: Update numeric instance if necessary
   negate = undefined
   (+)    = undefined
   (*)    = undefined
   abs    = undefined
   signum = undefined
-  fromInteger 0 = Menu $ Top Fst
-  fromInteger 1 = Menu $ Top Snd
-  fromInteger 2 = Menu $ Top Trd
-  fromInteger 3 = Menu $ Mid Fst
-  fromInteger 4 = Menu $ Mid Snd
-  fromInteger 5 = Menu $ Mid Trd
-  fromInteger 6 = Menu $ Bot Fst
-  fromInteger 7 = Menu $ Bot Snd
-  fromInteger 8 = Menu $ Bot Trd
-  fromInteger 9 = Food
-  fromInteger n = PartOf $ fromInteger n-3
-
-instance Num Snake where
-  negate = undefined
-  (+)    = undefined
-  (*)    = undefined
-  abs    = undefined
-  signum = undefined
-  fromInteger n = Head
-
-baseBoard :: Int -> Board
-baseBoard = addWalls . initBoard
-
-initBoard :: Int -> Board
-initBoard size = replicate size $ replicate size $ Menu $ Mid Snd
-
-addWalls :: Board -> Board
-addWalls l@(x:_) = [top] ++ midList ++ [bot]
-  where
-    midList = fmap addCorner l
-    addCorner k = [Menu $ Mid Fst] ++ k ++ [Menu $ Mid Trd]
-    top = [Menu $ Top Fst] ++ (replicate (length x) $ Menu $ Top Snd) ++ [Menu $ Top Trd]
-    bot = [Menu $ Bot Fst] ++ (replicate (length x) $ Menu $ Bot Snd) ++ [Menu $ Bot Trd]
+  fromInteger n = Head0
 
 initialMatchState :: MatchState
 initialMatchState = MatchState
-  { matchBoard = baseBoard 20
+  { boardSize = 20
   , interations = 60
-  , snake = [((10, 10), Head)]
+  , snake = initialSnake 20
   }
 
-moveSnake :: [(Position, Snake)] -> [(Position, Snake)]
-moveSnake [] = []
-moveSnake (((x,y), s):xs) = (((x+1,y), s):xs)
+initialSnake :: Int -> Snake
+initialSnake n = [h, b, t]
+  where
+    sIndex = 0
+    h = ((sIndex, sIndex), Right, Head1)
+    b = ((sIndex - 1, sIndex), Right, Body1)
+    t = ((sIndex - 2, sIndex), Right, Tail1)
+
+moveSnake :: Snake -> Snake
+moveSnake l = l
+
+-- snakeUp :: Snake -> Snake

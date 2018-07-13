@@ -2,9 +2,7 @@
 
 module Snake.Resource
   ( Drawn(..)
-  , Slot(..)
-  , Line(..)
-  , Board(..)
+  , boardAsset
   ) where
 
 import Snake.State.Match
@@ -16,17 +14,14 @@ class Drawn a where
   drawAt :: (Int, Int) -> a -> Gloss.Picture
   drawAt (x, y) a = Gloss.translate (toSlot x) (toSlot y) $ draw a
 
-instance Drawn Slot where
-  draw = Gloss.png . slotAsset
-
-instance Drawn Line where
-  draw = Gloss.pictures . positionInLine . map draw
-
-instance Drawn Board where
-  draw = Gloss.pictures . positionInColumn . map draw
-
 instance Drawn Snake where
-  draw = Gloss.png . snakeAsset
+  draw = Gloss.pictures . map draw
+
+instance Drawn SnakePart where
+  draw (p, _, s) = drawAt p s
+
+instance Drawn SnakeSlot where
+  draw = snakeAsset
 
 toSlot :: Int -> Float
 toSlot = (*) slotSize . fromIntegral
@@ -36,27 +31,41 @@ slotSize = 32
 
 steps = [0, slotSize ..]
 
-positionInLine :: [Gloss.Picture] -> [Gloss.Picture]
-positionInLine = positionInLine' . zip steps
-  where
-    positionInLine' = map (\(x, a) -> Gloss.translate x 0 a)
+-- positionInLine :: [Gloss.Picture] -> [Gloss.Picture]
+-- positionInLine = positionInLine' . zip steps
+--   where
+--     positionInLine' = map (\(x, a) -> Gloss.translate x 0 a)
 
-positionInColumn :: [Gloss.Picture] -> [Gloss.Picture]
-positionInColumn = positionInColumn' . zip steps
-  where
-    positionInColumn' = map (\(y, a) -> Gloss.translate 0 y a)
+-- positionInColumn :: [Gloss.Picture] -> [Gloss.Picture]
+-- positionInColumn = positionInColumn' . zip steps
+--   where
+--     positionInColumn' = map (\(y, a) -> Gloss.translate 0 y a)
 
-slotAsset :: Slot -> String
-slotAsset (Menu (Top Fst)) = "assets/png/nicepatch/arenaT0.png"
-slotAsset (Menu (Top Snd)) = "assets/png/nicepatch/arenaT1.png"
-slotAsset (Menu (Top Trd)) = "assets/png/nicepatch/arenaT2.png"
-slotAsset (Menu (Mid Fst)) = "assets/png/nicepatch/arenaM0.png"
-slotAsset (Menu (Mid Snd)) = "assets/png/nicepatch/arenaM1.png"
-slotAsset (Menu (Mid Trd)) = "assets/png/nicepatch/arenaM2.png"
-slotAsset (Menu (Bot Fst)) = "assets/png/nicepatch/arenaB0.png"
-slotAsset (Menu (Bot Snd)) = "assets/png/nicepatch/arenaB1.png"
-slotAsset (Menu (Bot Trd)) = "assets/png/nicepatch/arenaB2.png"
-slotAsset _ = "assets/png/invalid.png"
+snakeAsset :: SnakeSlot -> Gloss.Picture
+snakeAsset Head0   = Gloss.png "assets/png/snake/Head0.png"
+snakeAsset Head1   = Gloss.png "assets/png/snake/Head1.png"
+snakeAsset Head2   = Gloss.png "assets/png/snake/Head2.png"
+snakeAsset Head3   = Gloss.png "assets/png/snake/Head3.png"
+snakeAsset THead0  = Gloss.png "assets/png/snake/THead0.png"
+snakeAsset THead1  = Gloss.png "assets/png/snake/THead1.png"
+snakeAsset THead2  = Gloss.png "assets/png/snake/THead2.png"
+snakeAsset THead3  = Gloss.png "assets/png/snake/THead3.png"
+snakeAsset Tongue0 = Gloss.png "assets/png/snake/Tongue0.png"
+snakeAsset Tongue1 = Gloss.png "assets/png/snake/Tongue1.png"
+snakeAsset Tongue2 = Gloss.png "assets/png/snake/Tongue2.png"
+snakeAsset Tongue3 = Gloss.png "assets/png/snake/Tongue3.png"
+snakeAsset Tail0   = Gloss.png "assets/png/snake/Tail0.png"
+snakeAsset Tail1   = Gloss.png "assets/png/snake/Tail1.png"
+snakeAsset Tail2   = Gloss.png "assets/png/snake/Tail2.png"
+snakeAsset Tail3   = Gloss.png "assets/png/snake/Tail3.png"
+snakeAsset Body0   = Gloss.png "assets/png/snake/Body0.png"
+snakeAsset Body1   = Gloss.png "assets/png/snake/Body1.png"
+snakeAsset Body2   = Gloss.png "assets/png/snake/Body2.png"
+snakeAsset Body3   = Gloss.png "assets/png/snake/Body3.png"
+snakeAsset Curve0  = Gloss.png "assets/png/snake/Curve0.png"
+snakeAsset Curve1  = Gloss.png "assets/png/snake/Curve1.png"
+snakeAsset Curve2  = Gloss.png "assets/png/snake/Curve2.png"
+snakeAsset Curve3  = Gloss.png "assets/png/snake/Curve3.png"
 
-snakeAsset :: Snake -> String
-snakeAsset _ = "assets/png/snake/Head.png"
+boardAsset :: Gloss.Picture
+boardAsset = Gloss.png "assets/png/Background.png"

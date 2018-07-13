@@ -28,17 +28,16 @@ matchLoop s = s
 
 updateMatchLoop :: MatchState -> MatchState
 updateMatchLoop s = s
-  { matchBoard  = newMatchBoard
+  { boardSize   = curBoardSize -- Should not change
   , interations = newInterations
   , snake = newSnake
   }
   where
-    curMatchBoard  = matchBoard s
+    curBoardSize  = boardSize s
     curInterations = interations s
     curSnake = snake s
 
     newInterations = updateInterations curInterations
-    newMatchBoard  = curMatchBoard
     newSnake = alterIf shouldMove curSnake moveSnake
 
     updateInterations 0 = 60
