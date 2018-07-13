@@ -4,6 +4,7 @@ module Main
 
 import Snake.Render
 import Snake.GameState
+import Snake.Loop
 
 import qualified Graphics.Gloss.Game as Gloss
 
@@ -20,7 +21,6 @@ main :: IO ()
 main = Gloss.play window background 60 initialGameState renderGame handler [gameLoop]
 
 handler e s = s
-gameLoop n s = s
 
     -- draw (World {creeperPos = (x, y)}) 
     --   = pictures [ translate x y (scale 0.5 0.5 creeperSprite)

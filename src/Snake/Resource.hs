@@ -13,8 +13,8 @@ import qualified Graphics.Gloss.Game as Gloss
 
 class Drawn a where
   draw :: a -> Gloss.Picture
-  drawAt :: Float -> Float -> a -> Gloss.Picture
-  drawAt x y a = Gloss.translate x y $ draw a
+  drawAt :: (Int, Int) -> a -> Gloss.Picture
+  drawAt (x, y) a = Gloss.translate (toSlot x) (toSlot y) $ draw a
 
 instance Drawn Slot where
   draw = Gloss.png . slotAsset
@@ -24,6 +24,12 @@ instance Drawn Line where
 
 instance Drawn Board where
   draw = Gloss.pictures . positionInColumn . map draw
+
+instance Drawn Snake where
+  draw = Gloss.png . snakeAsset
+
+toSlot :: Int -> Float
+toSlot = (*) slotSize . fromIntegral
 
 slotSize :: Float
 slotSize = 32
@@ -51,3 +57,6 @@ slotAsset (Menu (Bot Fst)) = "assets/png/nicepatch/arenaB0.png"
 slotAsset (Menu (Bot Snd)) = "assets/png/nicepatch/arenaB1.png"
 slotAsset (Menu (Bot Trd)) = "assets/png/nicepatch/arenaB2.png"
 slotAsset _ = "assets/png/invalid.png"
+
+snakeAsset :: Snake -> String
+snakeAsset _ = "assets/png/snake/Head.png"

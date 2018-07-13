@@ -7,11 +7,15 @@ module Snake.State.Match
   , Snake(..)
   , NinePatch(..)
   , NPLine(..)
+  , Position(..)
   , baseBoard
+  , moveSnake
   ) where
 
 data MatchState = MatchState
   { matchBoard :: Board
+  , interations :: Int
+  , snake :: [(Position, Snake)]
   }
 
 data Snake
@@ -31,6 +35,7 @@ data NPLine = Fst | Snd | Trd
 
 type Line  = [Slot]
 type Board = [Line]
+type Position = (Int, Int)
 
 instance Num Slot where
   negate = undefined
@@ -65,13 +70,20 @@ initBoard :: Int -> Board
 initBoard size = replicate size $ replicate size $ Menu $ Mid Snd
 
 addWalls :: Board -> Board
-addWalls l@(x:_) = [bot] ++ midList ++ [top]
+addWalls l@(x:_) = [top] ++ midList ++ [bot]
   where
     midList = fmap addCorner l
     addCorner k = [Menu $ Mid Fst] ++ k ++ [Menu $ Mid Trd]
     top = [Menu $ Top Fst] ++ (replicate (length x) $ Menu $ Top Snd) ++ [Menu $ Top Trd]
     bot = [Menu $ Bot Fst] ++ (replicate (length x) $ Menu $ Bot Snd) ++ [Menu $ Bot Trd]
 
+initialMatchState :: MatchState
 initialMatchState = MatchState
   { matchBoard = baseBoard 20
+  , interations = 60
+  , snake = [((10, 10), Head)]
   }
+
+moveSnake :: [(Position, Snake)] -> [(Position, Snake)]
+moveSnake [] = []
+moveSnake (((x,y), s):xs) = (((x+1,y), s):xs)
