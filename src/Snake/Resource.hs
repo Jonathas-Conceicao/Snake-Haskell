@@ -24,7 +24,9 @@ instance Drawn SnakeSlot where
   draw = snakeAsset
 
 toSlot :: Int -> Float
-toSlot = (*) slotSize . fromIntegral
+toSlot = (subtract 272) . (*) slotSize . fromIntegral
+-- 320 - 32 - 16
+-- backgroundSize - slotSize - halfSlotSize
 
 slotSize :: Float
 slotSize = 32

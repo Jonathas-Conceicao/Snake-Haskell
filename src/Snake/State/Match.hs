@@ -43,13 +43,13 @@ initialMatchState :: MatchState
 initialMatchState = MatchState
   { boardSize = 20
   , interations = 60
-  , snake = initialSnake 20
+  , snake = initialSnake
   }
 
-initialSnake :: Int -> Snake
-initialSnake n = [h, b, t]
+initialSnake :: Snake
+initialSnake = [h, b, t]
   where
-    sIndex = 0
+    sIndex = 10
     h = ((sIndex, sIndex), Right, Head1)
     b = ((sIndex - 1, sIndex), Right, Body1)
     t = ((sIndex - 2, sIndex), Right, Tail1)
