@@ -9,7 +9,7 @@ import Snake.Loop
 import qualified Graphics.Gloss.Game as Gloss
 
 screenWidth, screenHeight :: Int
-(screenWidth, screenHeight) = (640, 672)
+(screenWidth, screenHeight) = (640, 640)
 
 window :: Gloss.Display
 window = (Gloss.InWindow "Snake-Haskell" (screenWidth, screenHeight) (0, 0))

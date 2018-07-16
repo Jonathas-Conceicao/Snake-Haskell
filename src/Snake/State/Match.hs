@@ -19,7 +19,7 @@ data MatchState = MatchState
 type Snake = [SnakePart]
 type SnakePart = (Position, Direction, SnakeSlot)
 
-data Direction = Up | Down | Left | Right
+data Direction = Up | Right | Down | Left
 
 data SnakeSlot
   =  Head0  |  Head1  |  Head2  |  Head3
@@ -39,9 +39,12 @@ instance Num SnakeSlot where -- TODO: Update numeric instance if necessary
   signum = undefined
   fromInteger n = Head0
 
+baseBoardSize :: Int
+baseBoardSize = 20
+
 initialMatchState :: MatchState
 initialMatchState = MatchState
-  { boardSize = 20
+  { boardSize = baseBoardSize
   , interations = 60
   , snake = initialSnake
   }
@@ -49,12 +52,21 @@ initialMatchState = MatchState
 initialSnake :: Snake
 initialSnake = [h, b, t]
   where
-    sIndex = 10
+    sIndex = (div baseBoardSize 2) - 1
     h = ((sIndex, sIndex), Right, Head1)
     b = ((sIndex - 1, sIndex), Right, Body1)
     t = ((sIndex - 2, sIndex), Right, Tail1)
 
 moveSnake :: Snake -> Snake
-moveSnake l = l
+moveSnake (x:xs) = (moveSnakeHead x):(moveSnakeBody xs)
+
+moveSnakeHead :: SnakePart -> SnakePart
+moveSnakeHead ((x, y), Up, s)    = ((x, y+1), Up,    Head0)
+moveSnakeHead ((x, y), Right, s) = ((x+1, y), Right, Head1)
+moveSnakeHead ((x, y), Down,  s) = ((x, y-1), Down,  Head2)
+moveSnakeHead ((x, y), Left,  s) = ((x+1, y), Left,  Head3)
+
+moveSnakeBody :: [SnakePart] -> [SnakePart]
+moveSnakeBody l = l
 
 -- snakeUp :: Snake -> Snake
