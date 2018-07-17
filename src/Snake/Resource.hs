@@ -23,6 +23,12 @@ instance Drawn SnakePart where
 instance Drawn SnakeSlot where
   draw = snakeAsset
 
+instance Drawn Food where
+  draw (p, s) = drawAt p s
+
+instance Drawn FoodSlot where
+  draw = foodAsset
+
 toSlot :: Int -> Float
 toSlot = (subtract 272) . (*) slotSize . fromIntegral
 -- 320 - 32 - 16
@@ -42,6 +48,9 @@ steps = [0, slotSize ..]
 -- positionInColumn = positionInColumn' . zip steps
 --   where
 --     positionInColumn' = map (\(y, a) -> Gloss.translate 0 y a)
+
+foodAsset :: FoodSlot -> Gloss.Picture
+foodAsset Apple = Gloss.png "assets/png/food/Apple.png"
 
 snakeAsset :: SnakeSlot -> Gloss.Picture
 snakeAsset Head0   = Gloss.png "assets/png/snake/Head0.png"

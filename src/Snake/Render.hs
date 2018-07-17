@@ -19,18 +19,16 @@ renderMenu :: GameState -> Gloss.Picture
 renderMenu s = Gloss.pictures []
 
 renderMatch :: GameState -> Gloss.Picture
-renderMatch state = Gloss.pictures [ pBoard, pSnake, debug ]
+renderMatch state = Gloss.pictures [ pBoard, pSnake, pFood ] -- , debug ]
   where
     ms = matchState state
     pBoard = renderBoard
-    pSnake = renderSnake $ snake ms
-    debug = Gloss.text $ show $ interations ms
+    pSnake = draw $ snake ms
+    pFood  = draw $ food ms
+    -- debug = Gloss.text $ show $ interations ms
 
 renderBoard :: Gloss.Picture
 renderBoard = boardAsset
-
-renderSnake :: Snake -> Gloss.Picture
-renderSnake = draw
 
 reposition :: Gloss.Picture -> Gloss.Picture -- TODO: Remove this or use relative values
 reposition = Gloss.translate 0 0 -- (-640 / 2) (-672 / 2)

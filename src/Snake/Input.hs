@@ -55,13 +55,11 @@ isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyUp) _ _ _) Up = True
 isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyRight) _ _ _) Right = True
 isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyDown) _ _ _) Down = True
 isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyLeft) _ _ _) Left = True
-
-isEvent (Gloss.EventKey (Gloss.Char 'W') _ _ _) Up = True
-isEvent (Gloss.EventKey (Gloss.Char 'D') _ _ _) Right = True
-isEvent (Gloss.EventKey (Gloss.Char 'S') _ _ _) Down = True
-isEvent (Gloss.EventKey (Gloss.Char 'A') _ _ _) Left = True
-
-isEvent (Gloss.EventKey (Gloss.Char 'J') _ _ _) Accept = True
-isEvent (Gloss.EventKey (Gloss.Char 'K') _ _ _) Cancel = True
+isEvent (Gloss.EventKey (Gloss.Char 'w') _ _ _) Up = True
+isEvent (Gloss.EventKey (Gloss.Char 'd') _ _ _) Right = True
+isEvent (Gloss.EventKey (Gloss.Char 's') _ _ _) Down = True
+isEvent (Gloss.EventKey (Gloss.Char 'a') _ _ _) Left = True
+isEvent (Gloss.EventKey (Gloss.Char 'j') _ _ _) Accept = True
+isEvent (Gloss.EventKey (Gloss.Char 'k') _ _ _) Cancel = True
 
 isEvent _ _ = False

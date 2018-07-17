@@ -6,6 +6,8 @@ module Snake.State.Match
   , SnakeSlot(..)
   , Position(..)
   , Direction(..)
+  , Food(..)
+  , FoodSlot(..)
   , moveSnake
   ) where
 
@@ -15,14 +17,18 @@ data MatchState = MatchState
   { boardSize   :: Int
   , interations :: Int
   , snake       :: Snake
+  , eaten       :: Bool
+  , food        :: Food
   }
 
 type Snake = [SnakePart]
+type Food  = (Position, FoodSlot)
 type SnakePart = (Position, Direction, SnakeSlot)
 
 data Direction = Up | Right | Down | Left
   deriving (Eq, Ord, Show, Enum)
 
+data FoodSlot = Apple
 data SnakeSlot
   =  Head0  |  Head1  |  Head2  |  Head3
   | THead0  | THead1  | THead2  | THead3
@@ -64,7 +70,12 @@ initialMatchState = MatchState
   { boardSize = baseBoardSize
   , interations = 60
   , snake = initialSnake
+  , eaten = False
+  , food  = initialFood
   }
+
+initialFood :: Food
+initialFood = ((13, 13), Apple)
 
 initialSnake :: Snake
 initialSnake = [h, b, t]
@@ -74,8 +85,8 @@ initialSnake = [h, b, t]
     b = ((sIndex - 1, sIndex), Right, Body1)
     t = ((sIndex - 2, sIndex), Right, Tail1)
 
-moveSnake :: Snake -> Snake
-moveSnake (x:xs) = (moveSnakeHead x) ++ (moveSnakeBody xs)
+moveSnake :: Bool -> Snake -> Snake
+moveSnake e (x:xs) = (moveSnakeHead x) ++ (moveSnakeBody e xs)
 
 moveSnakeHead :: SnakePart -> [SnakePart]
 moveSnakeHead ((x, y), Up, s)    = ((x, y+1), Up,    Head0):[genNeck (x,y) s Up]
@@ -83,12 +94,13 @@ moveSnakeHead ((x, y), Right, s) = ((x+1, y), Right, Head1):[genNeck (x,y) s Rig
 moveSnakeHead ((x, y), Down,  s) = ((x, y-1), Down,  Head2):[genNeck (x,y) s Down]
 moveSnakeHead ((x, y), Left,  s) = ((x-1, y), Left,  Head3):[genNeck (x,y) s Left]
 
-moveSnakeBody :: [SnakePart] -> [SnakePart]
-moveSnakeBody ((p, Up,    _):(_, _, _):[]) = [(p, Up,    Tail0)]
-moveSnakeBody ((p, Right, _):(_, _, _):[]) = [(p, Right, Tail1)]
-moveSnakeBody ((p, Down,  _):(_, _, _):[]) = [(p, Down,  Tail2)]
-moveSnakeBody ((p, Left,  _):(_, _, _):[]) = [(p, Left,  Tail3)]
-moveSnakeBody (x:xs) = x:(moveSnakeBody xs)
+moveSnakeBody :: Bool -> [SnakePart] -> [SnakePart]
+moveSnakeBody True l = l
+moveSnakeBody _ ((p, Up,    _):(_, _, _):[]) = [(p, Up,    Tail0)]
+moveSnakeBody _ ((p, Right, _):(_, _, _):[]) = [(p, Right, Tail1)]
+moveSnakeBody _ ((p, Down,  _):(_, _, _):[]) = [(p, Down,  Tail2)]
+moveSnakeBody _ ((p, Left,  _):(_, _, _):[]) = [(p, Left,  Tail3)]
+moveSnakeBody b (x:xs) = x:(moveSnakeBody b xs)
 
 genNeck :: Position -> SnakeSlot -> Direction -> SnakePart
 genNeck p Head1 Up = (p, Up, Curve1)

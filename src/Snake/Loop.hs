@@ -28,14 +28,17 @@ updateMatchLoop s = s
   { boardSize   = curBoardSize -- Should not change
   , interations = newInterations
   , snake = newSnake
+  , eaten = newEaten
   }
   where
     curBoardSize  = boardSize s
     curInterations = interations s
     curSnake = snake s
+    curEaten = eaten s
 
     newInterations = updateInterations curInterations
-    newSnake = alterIf shouldMove curSnake moveSnake
+    newSnake = alterIf shouldMove curSnake (moveSnake curEaten)
+    newEaten = curEaten
 
     updateInterations 0 = 60
     updateInterations x = x - 1
