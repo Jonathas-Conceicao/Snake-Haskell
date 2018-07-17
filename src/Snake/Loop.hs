@@ -9,40 +9,46 @@ import Snake.State.Data
 
 gameLoop :: Float -> GameState -> GameState
 gameLoop t s = case currentScene s of
-  MatchScene -> matchLoop s
+  MatchScene -> if defeated ms
+    then s
+    else s {matchState = matchLoop ms}
   MenuScene  -> menuLoop  s
+  where
+    ms = matchState s
 
 menuLoop :: GameState -> GameState
 menuLoop = id
 
-matchLoop :: GameState -> GameState
+matchLoop :: MatchState -> MatchState
 matchLoop s = s
-  { currentScene = currentScene s
-  , matchState = updateMatchLoop $ matchState s
-  , menuState = menuState s
-  , dataState = dataState s
-  }
-
-updateMatchLoop :: MatchState -> MatchState
-updateMatchLoop s = s
   { boardSize   = curBoardSize -- Should not change
   , interations = newInterations
   , snake = newSnake
   , eaten = newEaten
+  , food  = newFood
   }
   where
     curBoardSize  = boardSize s
     curInterations = interations s
     curSnake = snake s
     curEaten = eaten s
+    curSpeed = speed s
+    curFood  = food s
+    fl       = foodList s
 
     newInterations = updateInterations curInterations
-    newSnake = alterIf shouldMove curSnake (moveSnake curEaten)
-    newEaten = curEaten
+    newSnake = alterIf shouldMove curSnake (moveSnake newEaten)
+    newEaten = hasEaten
+    newFood  = if hasEaten then nextFood fl curSnake else curFood
+    newSpeed = curSpeed
 
-    updateInterations 0 = 60
+    updateInterations 0 = curSpeed
     updateInterations x = x - 1
-    shouldMove = (60 ==) curInterations
+    shouldMove = (curSpeed ==) curInterations
+    hasEaten = checkEaten curFood newSnake
+
+defeated :: MatchState -> Bool
+defeated = checkDefeat . snake
 
 alterIf :: Bool -> a -> (a -> a) -> a
 alterIf True  a f = f a

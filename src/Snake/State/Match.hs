@@ -8,7 +8,10 @@ module Snake.State.Match
   , Direction(..)
   , Food(..)
   , FoodSlot(..)
+  , nextFood
   , moveSnake
+  , checkDefeat
+  , checkEaten
   ) where
 
 import Prelude hiding (Either(..))
@@ -18,6 +21,7 @@ data MatchState = MatchState
   { boardSize   :: Int
   , foodList    :: [Food]
   , interations :: Int
+  , speed       :: Int
   , snake       :: Snake
   , eaten       :: Bool
   , food        :: Food
@@ -65,18 +69,20 @@ type Position = (Int, Int)
 --   fromInteger x = succ $ fromInteger $ x - 1
 
 baseBoardSize :: Int
-baseBoardSize = 20
+baseBoardSize = 18
 
 initialMatchState :: RandomGen g => g -> MatchState
 initialMatchState g = MatchState
   { boardSize = baseBoardSize
   , foodList = fl
-  , interations = 60
-  , snake = initialSnake
-  , eaten = False
-  , food  = newFood fl
+  , interations = 0
+  , speed = 30
+  , snake = is
+  , eaten = True
+  , food  = nextFood fl is
   }
   where
+    is = initialSnake
     fl = newFoodList g
 
 newFoodList :: RandomGen g => g -> [Food]
@@ -84,18 +90,37 @@ newFoodList g = ((x, y), Apple):(newFoodList g'')
   where
     (x, g')  = randomR range g
     (y, g'') = randomR range g'
-    range = (0, baseBoardSize -2)
+    range = (0, baseBoardSize -1)
 
-newFood :: [Food] -> Food
-newFood = head
+nextFood :: [Food] -> Snake -> Food
+nextFood (f@(p, _):xs) s = if p `colidesWithSnake` s
+  then nextFood xs s
+  else f
 
 initialSnake :: Snake
 initialSnake = [h, b, t]
   where
-    sIndex = (div baseBoardSize 2) - 1
-    h = ((sIndex, sIndex), Down, Head1)
+    sIndex = (div baseBoardSize 2)
+    h = ((sIndex, sIndex), Right, Head1)
     b = ((sIndex - 1, sIndex), Right, Body1)
     t = ((sIndex - 2, sIndex), Right, Tail1)
+
+checkDefeat :: Snake -> Bool
+checkDefeat (((x, y), _, _):xs)
+  =  x `outOfBounds` (0, baseBoardSize - 1)
+  || y `outOfBounds` (0, baseBoardSize - 1)
+  || (x, y) `colidesWithSnake` xs
+  where
+    outOfBounds a (l, h) = a < l || a > h
+
+checkEaten :: Food -> Snake -> Bool
+checkEaten (p, _) = (colidesWithSnake p) . pure . head
+
+colidesWithSnake :: Position -> Snake -> Bool
+colidesWithSnake p [] = False
+colidesWithSnake p ((ps, _, _):xs) = if p == ps
+  then True
+  else p `colidesWithSnake` xs
 
 moveSnake :: Bool -> Snake -> Snake
 moveSnake e (x:xs) = (moveSnakeHead x) ++ (moveSnakeBody e xs)
