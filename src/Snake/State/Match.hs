@@ -79,11 +79,11 @@ initialMatchState g = MatchState
   , speed = 30
   , snake = is
   , eaten = True
-  , food  = nextFood fl is
+  , food  = f
   }
   where
     is = initialSnake
-    fl = newFoodList g
+    (f, fl) = nextFood (newFoodList g) is
 
 newFoodList :: RandomGen g => g -> [Food]
 newFoodList g = ((x, y), Apple):(newFoodList g'')
@@ -92,10 +92,10 @@ newFoodList g = ((x, y), Apple):(newFoodList g'')
     (y, g'') = randomR range g'
     range = (0, baseBoardSize -1)
 
-nextFood :: [Food] -> Snake -> Food
+nextFood :: [Food] -> Snake -> (Food, [Food])
 nextFood (f@(p, _):xs) s = if p `colidesWithSnake` s
   then nextFood xs s
-  else f
+  else (f, xs)
 
 initialSnake :: Snake
 initialSnake = [h, b, t]
