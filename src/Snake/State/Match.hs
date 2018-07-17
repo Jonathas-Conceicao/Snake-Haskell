@@ -83,6 +83,13 @@ moveSnakeHead ((x, y), Right, s) = ((x+1, y), Right, Head1):[genNeck (x,y) s Rig
 moveSnakeHead ((x, y), Down,  s) = ((x, y-1), Down,  Head2):[genNeck (x,y) s Down]
 moveSnakeHead ((x, y), Left,  s) = ((x-1, y), Left,  Head3):[genNeck (x,y) s Left]
 
+moveSnakeBody :: [SnakePart] -> [SnakePart]
+moveSnakeBody ((p, Up,    _):(_, _, _):[]) = [(p, Up,    Tail0)]
+moveSnakeBody ((p, Right, _):(_, _, _):[]) = [(p, Right, Tail1)]
+moveSnakeBody ((p, Down,  _):(_, _, _):[]) = [(p, Down,  Tail2)]
+moveSnakeBody ((p, Left,  _):(_, _, _):[]) = [(p, Left,  Tail3)]
+moveSnakeBody (x:xs) = x:(moveSnakeBody xs)
+
 genNeck :: Position -> SnakeSlot -> Direction -> SnakePart
 genNeck p Head1 Up = (p, Up, Curve1)
 genNeck p Head3 Up = (p, Up, Curve0)
@@ -99,6 +106,3 @@ genNeck p _ Down = (p, Down, Body2)
 genNeck p Head0 Left = (p, Left, Curve3)
 genNeck p Head2 Left = (p, Left, Curve1)
 genNeck p _ Left = (p, Left, Body3)
-
-moveSnakeBody :: [SnakePart] -> [SnakePart]
-moveSnakeBody l = l

@@ -14,7 +14,7 @@ import qualified Graphics.Gloss.Game as Gloss
 
 data Input
   = Up | Right | Down | Left
-  | Acept | Cancel
+  | Accept | Cancel
 
 gameInput :: Gloss.Event -> GameState -> GameState
 gameInput e s = case currentScene s of
@@ -40,6 +40,10 @@ snakeInput e s
 tryMove :: Snake -> Input -> Snake
 tryMove ((p, d, s):xs) i = ((p, tryMove' s i, s):xs)
   where
+    tryMove' Head0 Down  = d
+    tryMove' Head1 Left  = d
+    tryMove' Head2 Up    = d
+    tryMove' Head3 Right = d
     tryMove' _ i = trans i
     trans Up = Match.Up
     trans Right = Match.Right
@@ -56,4 +60,8 @@ isEvent (Gloss.EventKey (Gloss.Char 'W') _ _ _) Up = True
 isEvent (Gloss.EventKey (Gloss.Char 'D') _ _ _) Right = True
 isEvent (Gloss.EventKey (Gloss.Char 'S') _ _ _) Down = True
 isEvent (Gloss.EventKey (Gloss.Char 'A') _ _ _) Left = True
+
+isEvent (Gloss.EventKey (Gloss.Char 'J') _ _ _) Accept = True
+isEvent (Gloss.EventKey (Gloss.Char 'K') _ _ _) Cancel = True
+
 isEvent _ _ = False
