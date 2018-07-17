@@ -19,12 +19,13 @@ renderMenu :: GameState -> Gloss.Picture
 renderMenu s = Gloss.pictures []
 
 renderMatch :: GameState -> Gloss.Picture
-renderMatch state = Gloss.pictures [ pBoard, pSnake, pFood ] -- , debug ]
+renderMatch state = Gloss.pictures [ pBoard, pSnake, pFood, pScore ] -- , debug ]
   where
     ms = matchState state
     pBoard = renderBoard
     pSnake = draw $ snake ms
     pFood  = draw $ food ms
+    pScore = draw $ score ms
     -- debug = Gloss.text $ show $ interations ms
 
 renderBoard :: Gloss.Picture

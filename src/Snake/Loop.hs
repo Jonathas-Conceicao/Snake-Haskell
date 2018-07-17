@@ -23,6 +23,7 @@ matchLoop :: MatchState -> MatchState
 matchLoop s = s
   { boardSize   = curBoardSize -- Should not change
   , interations = newInterations
+  , score = newScore
   , foodList = newFL
   , snake = newSnake
   , eaten = newEaten
@@ -31,6 +32,7 @@ matchLoop s = s
   where
     curBoardSize  = boardSize s
     curInterations = interations s
+    curScore = score s
     curSnake = snake s
     curEaten = eaten s
     curSpeed = speed s
@@ -40,6 +42,7 @@ matchLoop s = s
     newInterations = updateInterations curInterations
     newSnake = alterIf shouldMove curSnake (moveSnake newEaten)
     newEaten = hasEaten
+    newScore = if hasEaten then curScore + 1 else curScore
     newFood  = if hasEaten then f  else curFood
     newFL    = if hasEaten then fl else curFL
     newSpeed = curSpeed

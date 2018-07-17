@@ -14,6 +14,9 @@ class Drawn a where
   drawAt :: (Int, Int) -> a -> Gloss.Picture
   drawAt (x, y) a = Gloss.translate (toSlot x) (toSlot y) $ draw a
 
+instance Drawn Gloss.Picture where
+  draw = id
+
 instance Drawn Snake where
   draw = Gloss.pictures . map draw
 
@@ -29,6 +32,22 @@ instance Drawn Food where
 instance Drawn FoodSlot where
   draw = foodAsset
 
+instance Drawn Int where
+  draw n
+    | n <= 9    = drawAt numPosition $ numAsset n
+    | otherwise = draw $ digits n
+
+instance Drawn [Int] where
+  draw = Gloss.pictures . positionInLine . map draw
+
+digits :: Int -> [Int]
+digits n
+  | n <= 9    = pure n
+  | otherwise = digits (div n 10) ++ pure (rem n 10)
+
+numPosition :: (Int, Int)
+numPosition = (8, 18)
+
 toSlot :: Int -> Float
 toSlot = (subtract 272) . (*) slotSize . fromIntegral
 -- 320 - 32 - 16
@@ -39,10 +58,10 @@ slotSize = 32
 
 steps = [0, slotSize ..]
 
--- positionInLine :: [Gloss.Picture] -> [Gloss.Picture]
--- positionInLine = positionInLine' . zip steps
---   where
---     positionInLine' = map (\(x, a) -> Gloss.translate x 0 a)
+positionInLine :: [Gloss.Picture] -> [Gloss.Picture]
+positionInLine = positionInLine' . zip steps
+  where
+    positionInLine' = map (\(x, a) -> Gloss.translate x 0 a)
 
 -- positionInColumn :: [Gloss.Picture] -> [Gloss.Picture]
 -- positionInColumn = positionInColumn' . zip steps
@@ -51,6 +70,18 @@ steps = [0, slotSize ..]
 
 foodAsset :: FoodSlot -> Gloss.Picture
 foodAsset Apple = Gloss.png "assets/png/food/Apple.png"
+
+numAsset :: Int -> Gloss.Picture
+numAsset 0 = Gloss.png "assets/png/numbers/num_0.png"
+numAsset 1 = Gloss.png "assets/png/numbers/num_1.png"
+numAsset 2 = Gloss.png "assets/png/numbers/num_2.png"
+numAsset 3 = Gloss.png "assets/png/numbers/num_3.png"
+numAsset 4 = Gloss.png "assets/png/numbers/num_4.png"
+numAsset 5 = Gloss.png "assets/png/numbers/num_5.png"
+numAsset 6 = Gloss.png "assets/png/numbers/num_6.png"
+numAsset 7 = Gloss.png "assets/png/numbers/num_7.png"
+numAsset 8 = Gloss.png "assets/png/numbers/num_8.png"
+numAsset _ = Gloss.png "assets/png/numbers/num_9.png"
 
 snakeAsset :: SnakeSlot -> Gloss.Picture
 snakeAsset Head0   = Gloss.png "assets/png/snake/Head0.png"

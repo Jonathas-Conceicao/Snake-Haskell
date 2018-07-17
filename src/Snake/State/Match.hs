@@ -22,6 +22,7 @@ data MatchState = MatchState
   , foodList    :: [Food]
   , interations :: Int
   , speed       :: Int
+  , score       :: Int
   , snake       :: Snake
   , eaten       :: Bool
   , food        :: Food
@@ -76,7 +77,8 @@ initialMatchState g = MatchState
   { boardSize = baseBoardSize
   , foodList = fl
   , interations = 0
-  , speed = 30
+  , speed = 9
+  , score = 0
   , snake = is
   , eaten = True
   , food  = f
