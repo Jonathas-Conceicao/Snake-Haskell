@@ -7,9 +7,6 @@ import Snake.State.Match
 import Snake.State.Menu
 import Snake.State.Data
 
--- Master Debug thecnics
--- import System.IO.Unsafe -- (unsafePerformIO (print "ASD")) `seq` 
-
 gameLoop :: Float -> GameState -> GameState
 gameLoop t s = case currentScene s of
   MatchScene -> matchLoop s

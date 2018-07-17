@@ -5,6 +5,7 @@ module Snake.State.Match
   , SnakePart(..)
   , SnakeSlot(..)
   , Position(..)
+  , Direction(..)
   , moveSnake
   ) where
 
@@ -20,6 +21,7 @@ type Snake = [SnakePart]
 type SnakePart = (Position, Direction, SnakeSlot)
 
 data Direction = Up | Right | Down | Left
+  deriving (Eq, Ord, Show, Enum)
 
 data SnakeSlot
   =  Head0  |  Head1  |  Head2  |  Head3
@@ -28,16 +30,31 @@ data SnakeSlot
   |  Tail0  |  Tail1  |  Tail2  |  Tail3
   |  Body0  |  Body1  |  Body2  |  Body3
   | Curve0  | Curve1  | Curve2  | Curve3
+  deriving (Eq, Ord, Show, Enum)
   
 type Position = (Int, Int)
 
-instance Num SnakeSlot where -- TODO: Update numeric instance if necessary
-  negate = undefined
-  (+)    = undefined
-  (*)    = undefined
-  abs    = undefined
-  signum = undefined
-  fromInteger n = Head0
+-- instance Num Direction where
+--   negate = id
+--   (+) x Up = succ x
+--   (+) x y = x + (pred y)
+--   (*)    = undefined
+--   abs    = undefined
+--   signum Up = 0
+--   signum _ = 1
+--   fromInteger 0 = Up
+--   fromInteger x = succ $ fromInteger $ x - 1
+
+-- instance Num SnakeSlot where
+--   negate = id
+--   (+) x Head0 = succ x
+--   (+) x y = x + (pred y)
+--   (*)    = undefined
+--   abs    = undefined
+--   signum Head0 = 0
+--   signum _ = 1
+--   fromInteger 0 = Head0
+--   fromInteger x = succ $ fromInteger $ x - 1
 
 baseBoardSize :: Int
 baseBoardSize = 20
@@ -53,20 +70,35 @@ initialSnake :: Snake
 initialSnake = [h, b, t]
   where
     sIndex = (div baseBoardSize 2) - 1
-    h = ((sIndex, sIndex), Right, Head1)
+    h = ((sIndex, sIndex), Down, Head1)
     b = ((sIndex - 1, sIndex), Right, Body1)
     t = ((sIndex - 2, sIndex), Right, Tail1)
 
 moveSnake :: Snake -> Snake
-moveSnake (x:xs) = (moveSnakeHead x):(moveSnakeBody xs)
+moveSnake (x:xs) = (moveSnakeHead x) ++ (moveSnakeBody xs)
 
-moveSnakeHead :: SnakePart -> SnakePart
-moveSnakeHead ((x, y), Up, s)    = ((x, y+1), Up,    Head0)
-moveSnakeHead ((x, y), Right, s) = ((x+1, y), Right, Head1)
-moveSnakeHead ((x, y), Down,  s) = ((x, y-1), Down,  Head2)
-moveSnakeHead ((x, y), Left,  s) = ((x+1, y), Left,  Head3)
+moveSnakeHead :: SnakePart -> [SnakePart]
+moveSnakeHead ((x, y), Up, s)    = ((x, y+1), Up,    Head0):[genNeck (x,y) s Up]
+moveSnakeHead ((x, y), Right, s) = ((x+1, y), Right, Head1):[genNeck (x,y) s Right]
+moveSnakeHead ((x, y), Down,  s) = ((x, y-1), Down,  Head2):[genNeck (x,y) s Down]
+moveSnakeHead ((x, y), Left,  s) = ((x-1, y), Left,  Head3):[genNeck (x,y) s Left]
+
+genNeck :: Position -> SnakeSlot -> Direction -> SnakePart
+genNeck p Head1 Up = (p, Up, Curve1)
+genNeck p Head3 Up = (p, Up, Curve0)
+genNeck p _ Up = (p, Up, Body0)
+
+genNeck p Head0 Right = (p, Right, Curve2)
+genNeck p Head2 Right = (p, Right, Curve0)
+genNeck p _ Right = (p, Right, Body1)
+
+genNeck p Head1 Down = (p, Down, Curve3)
+genNeck p Head3 Down = (p, Down, Curve2)
+genNeck p _ Down = (p, Down, Body2)
+
+genNeck p Head0 Left = (p, Left, Curve3)
+genNeck p Head2 Left = (p, Left, Curve1)
+genNeck p _ Left = (p, Left, Body3)
 
 moveSnakeBody :: [SnakePart] -> [SnakePart]
 moveSnakeBody l = l
-
--- snakeUp :: Snake -> Snake
