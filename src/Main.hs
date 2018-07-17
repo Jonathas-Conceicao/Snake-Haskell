@@ -23,15 +23,10 @@ background = Gloss.white
 main :: IO ()
 main = do
   gen <- newStdGen
-  Gloss.play window background 60 (initialGameState gen) renderGame gameInput [gameLoop]
-
-    -- draw (World {creeperPos = (x, y)}) 
-    --   = pictures [ translate x y (scale 0.5 0.5 creeperSprite)
-    --              , translate (fst platformPos) (snd platformPos) (scale 0.5 0.5 platformSprite)
-    --              ]
-    
-    -- handle (EventKey (Char 'a') Down _ _)            world = world {creeperPos = moveX (creeperPos world) (-10)}
-    -- handle (EventKey (Char 'd') Down _ _)            world = world {creeperPos = moveX (creeperPos world) 10}
-    -- handle (EventKey (SpecialKey KeySpace) Down _ _) world = world {creeperVelocity = 10}
-    -- handle _event                         world            = world
-        
+  Gloss.play
+    window
+    background
+    16
+    (initialGameState gen)
+    renderGame gameInput
+    [gameLoop]        

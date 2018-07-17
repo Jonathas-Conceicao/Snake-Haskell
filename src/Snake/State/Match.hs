@@ -23,6 +23,7 @@ data MatchState = MatchState
   , interations :: Int
   , speed       :: Int
   , score       :: Int
+  , defeated    :: Bool
   , snake       :: Snake
   , eaten       :: Bool
   , food        :: Food
@@ -47,28 +48,6 @@ data SnakeSlot
   
 type Position = (Int, Int)
 
--- instance Num Direction where
---   negate = id
---   (+) x Up = succ x
---   (+) x y = x + (pred y)
---   (*)    = undefined
---   abs    = undefined
---   signum Up = 0
---   signum _ = 1
---   fromInteger 0 = Up
---   fromInteger x = succ $ fromInteger $ x - 1
-
--- instance Num SnakeSlot where
---   negate = id
---   (+) x Head0 = succ x
---   (+) x y = x + (pred y)
---   (*)    = undefined
---   abs    = undefined
---   signum Head0 = 0
---   signum _ = 1
---   fromInteger 0 = Head0
---   fromInteger x = succ $ fromInteger $ x - 1
-
 baseBoardSize :: Int
 baseBoardSize = 18
 
@@ -77,10 +56,11 @@ initialMatchState g = MatchState
   { boardSize = baseBoardSize
   , foodList = fl
   , interations = 0
-  , speed = 9
+  , speed = 2
   , score = 0
+  , defeated = False
   , snake = is
-  , eaten = True
+  , eaten = False
   , food  = f
   }
   where
