@@ -8,6 +8,8 @@ import Snake.State.Match
 import Snake.State.Menu
 import Snake.State.Data
 
+import System.Random
+
 data GameState = GameState
   { currentScene :: Scene
   , matchState :: MatchState
@@ -17,10 +19,10 @@ data GameState = GameState
 
 data Scene = MatchScene | MenuScene
 
-initialGameState :: GameState
-initialGameState = GameState
+initialGameState :: RandomGen g => g -> GameState
+initialGameState g = GameState
   { currentScene = MatchScene
-  , matchState = initialMatchState
+  , matchState = initialMatchState g
   , menuState  = initialMenuState
   , dataState  = initialDataState
   }

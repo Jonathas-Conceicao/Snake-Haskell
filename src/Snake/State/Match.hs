@@ -12,9 +12,11 @@ module Snake.State.Match
   ) where
 
 import Prelude hiding (Either(..))
+import System.Random
 
 data MatchState = MatchState
   { boardSize   :: Int
+  , foodList    :: [Food]
   , interations :: Int
   , snake       :: Snake
   , eaten       :: Bool
@@ -65,17 +67,27 @@ type Position = (Int, Int)
 baseBoardSize :: Int
 baseBoardSize = 20
 
-initialMatchState :: MatchState
-initialMatchState = MatchState
+initialMatchState :: RandomGen g => g -> MatchState
+initialMatchState g = MatchState
   { boardSize = baseBoardSize
+  , foodList = fl
   , interations = 60
   , snake = initialSnake
   , eaten = False
-  , food  = initialFood
+  , food  = newFood fl
   }
+  where
+    fl = newFoodList g
 
-initialFood :: Food
-initialFood = ((13, 13), Apple)
+newFoodList :: RandomGen g => g -> [Food]
+newFoodList g = ((x, y), Apple):(newFoodList g'')
+  where
+    (x, g')  = randomR range g
+    (y, g'') = randomR range g'
+    range = (0, baseBoardSize -2)
+
+newFood :: [Food] -> Food
+newFood = head
 
 initialSnake :: Snake
 initialSnake = [h, b, t]

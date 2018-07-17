@@ -15,6 +15,7 @@ import qualified Graphics.Gloss.Game as Gloss
 data Input
   = Up | Right | Down | Left
   | Accept | Cancel
+  | Close
 
 gameInput :: Gloss.Event -> GameState -> GameState
 gameInput e s = case currentScene s of
@@ -35,7 +36,10 @@ snakeInput e s
   | isEvent e Right = tryMove s Right
   | isEvent e Down  = tryMove s Down
   | isEvent e Left  = tryMove s Left
+  | isEvent e Close = closeAll
   | otherwise = s
+
+closeAll = error "Close all!"
 
 tryMove :: Snake -> Input -> Snake
 tryMove ((p, d, s):xs) i = ((p, tryMove' s i, s):xs)
@@ -55,6 +59,7 @@ isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyUp) _ _ _) Up = True
 isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyRight) _ _ _) Right = True
 isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyDown) _ _ _) Down = True
 isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyLeft) _ _ _) Left = True
+isEvent (Gloss.EventKey (Gloss.SpecialKey Gloss.KeyEsc) _ _ _) Close = True
 isEvent (Gloss.EventKey (Gloss.Char 'w') _ _ _) Up = True
 isEvent (Gloss.EventKey (Gloss.Char 'd') _ _ _) Right = True
 isEvent (Gloss.EventKey (Gloss.Char 's') _ _ _) Down = True

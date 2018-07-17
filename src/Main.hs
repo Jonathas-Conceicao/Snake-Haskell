@@ -7,6 +7,8 @@ import Snake.GameState
 import Snake.Loop
 import Snake.Input
 
+import System.Random
+
 import qualified Graphics.Gloss.Game as Gloss
 
 screenWidth, screenHeight :: Int
@@ -19,7 +21,9 @@ background :: Gloss.Color
 background = Gloss.white
 
 main :: IO ()
-main = Gloss.play window background 60 initialGameState renderGame gameInput [gameLoop]
+main = do
+  gen <- newStdGen
+  Gloss.play window background 60 (initialGameState gen) renderGame gameInput [gameLoop]
 
     -- draw (World {creeperPos = (x, y)}) 
     --   = pictures [ translate x y (scale 0.5 0.5 creeperSprite)
