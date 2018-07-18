@@ -70,6 +70,7 @@ positionInLine = positionInLine' . zip steps
 
 foodAsset :: FoodSlot -> Gloss.Picture
 foodAsset Apple = Gloss.png "assets/png/food/Apple.png"
+foodAsset None = Gloss.blank
 
 numAsset :: Int -> Gloss.Picture
 numAsset 0 = Gloss.png "assets/png/numbers/num_0.png"

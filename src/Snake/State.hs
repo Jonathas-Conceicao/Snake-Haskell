@@ -1,6 +1,7 @@
 module Snake.State
   ( GameState(..)
   , initialGameState
+  , resetGameState
   , Snake(..)
   , SnakePart(..)
   , SnakeSlot(..)
@@ -36,7 +37,7 @@ type SnakePart = (Position, Direction, SnakeSlot)
 data Direction = Up | Right | Down | Left
   deriving (Eq, Ord, Show, Enum)
 
-data FoodSlot = Apple
+data FoodSlot = Apple | None
 data SnakeSlot
   =  Head0  |  Head1  |  Head2  |  Head3
   | THead0  | THead1  | THead2  | THead3
@@ -51,21 +52,34 @@ type Position = (Int, Int)
 baseBoardSize :: Int
 baseBoardSize = 18
 
+newGen :: GameState -> StdGen
+newGen = mkStdGen . (uncurry (-)) . fst . food
+
+resetGameState :: GameState -> GameState
+resetGameState s = s
+  { defeated = False
+  , interations = 0
+  , score = 0
+  , snake = is
+  , foodList = fl
+  , food = f
+  } 
+  where
+    is = initialSnake
+    (f, fl) = nextFood (newFoodList (newGen s)) is
+  
 initialGameState :: RandomGen g => g -> GameState
 initialGameState g = GameState
   { boardSize = baseBoardSize
-  , foodList = fl
+  , foodList = newFoodList g
   , interations = 0
   , speed = 2
   , score = 0
   , defeated = True
-  , snake = is
+  , snake = []
   , eaten = False
-  , food  = f
+  , food  = ((0, 0), None)
   }
-  where
-    is = initialSnake
-    (f, fl) = nextFood (newFoodList g) is
 
 newFoodList :: RandomGen g => g -> [Food]
 newFoodList g = ((x, y), Apple):(newFoodList g'')
