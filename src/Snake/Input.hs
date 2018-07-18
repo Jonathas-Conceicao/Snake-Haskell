@@ -3,6 +3,7 @@ module Snake.Input
   ) where
 
 import Prelude hiding (Either(..))
+import System.Random
 
 import Snake.State hiding (Direction(..))
 import qualified Snake.State as State (Direction(..))
@@ -14,9 +15,17 @@ data Input
   | Accept | Close
 
 gameInput :: Gloss.Event -> GameState -> GameState
-gameInput e s = s
-  { snake = snakeInput e $ snake s
-  }
+gameInput e s = if defeated s
+  then defeatedInput e s
+  else s { snake = snakeInput e $ snake s }
+
+defeatedInput :: Gloss.Event -> GameState -> GameState
+defeatedInput e s = if isEvent e Accept
+  then (initialGameState (newGen s)) { defeated = False }
+  else s
+
+newGen :: GameState -> StdGen
+newGen = mkStdGen . (uncurry (-)) . fst . food
 
 snakeInput :: Gloss.Event -> Snake -> Snake
 snakeInput e s
