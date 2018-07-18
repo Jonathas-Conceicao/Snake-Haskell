@@ -3,7 +3,7 @@ module Main
   ) where
 
 import Snake.Render
-import Snake.GameState
+import Snake.State
 import Snake.Loop
 import Snake.Input
 
@@ -15,7 +15,10 @@ screenWidth, screenHeight :: Int
 (screenWidth, screenHeight) = (640, 640)
 
 window :: Gloss.Display
-window = (Gloss.InWindow "Snake-Haskell" (screenWidth, screenHeight) (0, 0))
+window = Gloss.InWindow
+  "Snake-Haskell"
+  (screenWidth, screenHeight)
+  (0, 0)
 
 background :: Gloss.Color
 background = Gloss.white

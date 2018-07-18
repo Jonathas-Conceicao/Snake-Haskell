@@ -2,26 +2,16 @@ module Snake.Loop
   ( gameLoop
   ) where
 
-import Snake.GameState
-import Snake.State.Match
-import Snake.State.Menu
-import Snake.State.Data
+import Snake.State
 
 gameLoop :: Float -> GameState -> GameState
-gameLoop t s = case currentScene s of
-  MatchScene -> if defeated ms
-    then s
-    else s {matchState = matchLoop ms}
-  MenuScene  -> menuLoop  s
-  where
-    ms = matchState s
+gameLoop f s = if defeated s
+  then s
+  else matchLoop s
 
-menuLoop :: GameState -> GameState
-menuLoop = id
-
-matchLoop :: MatchState -> MatchState
+matchLoop :: GameState -> GameState
 matchLoop s = s
-  { boardSize   = curBoardSize -- Should not change
+  { boardSize   = curBoardSize
   , interations = newInterations
   , defeated = newDefeated
   , score = newScore

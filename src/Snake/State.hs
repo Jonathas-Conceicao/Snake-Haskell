@@ -1,6 +1,6 @@
-module Snake.State.Match
-  ( MatchState(..)
-  , initialMatchState
+module Snake.State
+  ( GameState(..)
+  , initialGameState
   , Snake(..)
   , SnakePart(..)
   , SnakeSlot(..)
@@ -17,7 +17,7 @@ module Snake.State.Match
 import Prelude hiding (Either(..))
 import System.Random
 
-data MatchState = MatchState
+data GameState = GameState
   { boardSize   :: Int
   , foodList    :: [Food]
   , interations :: Int
@@ -51,8 +51,8 @@ type Position = (Int, Int)
 baseBoardSize :: Int
 baseBoardSize = 18
 
-initialMatchState :: RandomGen g => g -> MatchState
-initialMatchState g = MatchState
+initialGameState :: RandomGen g => g -> GameState
+initialGameState g = GameState
   { boardSize = baseBoardSize
   , foodList = fl
   , interations = 0

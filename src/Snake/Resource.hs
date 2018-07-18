@@ -5,7 +5,7 @@ module Snake.Resource
   , boardAsset
   ) where
 
-import Snake.State.Match
+import Snake.State
 
 import qualified Graphics.Gloss.Game as Gloss
 
