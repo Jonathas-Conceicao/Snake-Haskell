@@ -1,6 +1,6 @@
 # Haskell-Snake
 
-A implementation of the Snake game made in Haskell using the [gloss-game](http://hackage.haskell.org/package/gloss-game) package.
+A implementation of the ancient Snake game made in Haskell using the [gloss-game](http://hackage.haskell.org/package/gloss-game) package.
 
 ## Running
 
